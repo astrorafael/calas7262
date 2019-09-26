@@ -50,9 +50,9 @@ The default values are:
 
 Once invoked with the mandatory wavelength parameter, the tool will display a prompt after some 5-10 seconds of delay
 
-![Figure 1](img/calas7262_a.png)
+![](img/calas7262_a.png)
 
 When the propmpt is ready, adjust the hardware exposure time and gain and then type `start`
 After taking some readings, it will display the final staticstics as shown in the figure below:
 
-![Figure 2](img/calas7262_b.png)
+![](img/calas7262_b.png)
