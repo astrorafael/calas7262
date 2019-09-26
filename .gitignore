@@ -1,0 +1,9 @@
+_trial_temp/
+*.txt
+*.egg-info/
+build
+dist
+*.pyc
+*.pyo
+*~
+sftp-config.json

@@ -1,0 +1,5 @@
+include versioneer.py
+include calas7262/_version.py
+include files/usr/local/bin/calas7262
+
+
