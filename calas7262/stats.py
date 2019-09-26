@@ -158,9 +158,6 @@ class StatsService(Service):
             self.stats[key + ' stddev'] = stddev
 
     def formatStats(self):
-        #msg = []
-        #msg.append(["Please adjust AS7262 Gain and Exposure Time"])
-        #print(tabulate.tabulate(msg, tablefmt='grid'))
         headMas=["Samples","Wavelenth (nm)","Exp. Time (ms)", "Gain"]
         msg1 = tabulate.tabulate(self.master, headers=headMas, tablefmt='grid')
         headDet=["Band","Average Flux","Std. Deviation"]

@@ -45,7 +45,6 @@ from calas7262.service.reloadable import MultiService
 from calas7262.config   import cmdline
 from calas7262.protocol import AS7262ProtocolFactory
 from calas7262.serial   import SerialService
-from calas7262.tcp      import MyTCPService
 from calas7262.stats    import StatsService    
 from calas7262.console  import ConsoleService    
 
