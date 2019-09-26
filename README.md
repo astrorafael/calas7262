@@ -13,9 +13,7 @@ sudo python setup.py install
 ## Usage
 
 This program is a helper tool to calibrate the spectral response of the AS7262, used in `streetcolors` prototype, part of the EU-funded project ACTION.
-
-For the calibration process it is necessary to adjust the sensor gain and exposure time.
-
+The utility shows its usage in the command line:
 
 ```bash
  ~$ calas7262 --help
@@ -40,6 +38,7 @@ optional arguments:
   -b {9600,115200}, --baud {9600,115200}
                         Serial port baudrate
 ```
+Most of the time, the default values are ok and the user has to supply a mandatory `wavelength` parameter, only used as a tag to identify measurements.
 
 The default values are:
 * Logging: logging to file enabled, logging to console disabled
@@ -48,3 +47,12 @@ The default values are:
 * Sample size: 25 readings
 * Serial Port: `/dev/ttyUSB0` @ 115200 baud
 * CSV data file: `calas7262.log` in your current directory
+
+Once invoked with the mandatory wavelength parameter, the tool will display a prompt after some 5-10 seconds of delay
+
+![Figure 1](img/calas7262_a.png)
+
+When the propmpt is ready, adjust the hardware exposure time and gain and then type `start`
+After taking some readings, it will display the final staticstics as shown in the figure below:
+
+![Figure 2](img/calas7262_b.png)
