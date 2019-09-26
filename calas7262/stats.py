@@ -135,8 +135,8 @@ class StatsService(Service):
             self.queue['red'].append(sample['red'])
             if len(self.queue['red']) == self.qsize:
                 self.computeStats()
-                self.printStats()
-                self.parent.onStatsComplete(self.stats)
+                tables = self.formatStats()
+                self.parent.onStatsComplete(self.stats, tables)
                
     # --------------
     # Main task
@@ -157,14 +157,16 @@ class StatsService(Service):
             self.stats[key] = central
             self.stats[key + ' stddev'] = stddev
 
-    def printStats(self):
+    def formatStats(self):
         #msg = []
         #msg.append(["Please adjust AS7262 Gain and Exposure Time"])
         #print(tabulate.tabulate(msg, tablefmt='grid'))
         headMas=["Samples","Wavelenth (nm)","Exp. Time (ms)", "Gain"]
-        print(tabulate.tabulate(self.master, headers=headMas, tablefmt='grid'))
+        msg1 = tabulate.tabulate(self.master, headers=headMas, tablefmt='grid')
         headDet=["Band","Average Flux","Std. Deviation"]
-        print(tabulate.tabulate(self.detail, headers=headDet, tablefmt='grid'))
-
+        msg2 = tabulate.tabulate(self.detail, headers=headDet, tablefmt='grid')
+        return (msg1, msg2)
+       
+        
 
 __all__ = [ "StatsService" ]

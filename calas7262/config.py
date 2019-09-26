@@ -89,6 +89,8 @@ def cmdline_options():
     options['stats']['log_level']   = opts.log_level
     options['stats']['size']        = opts.size
     options['stats']['wavelength']  = opts.wavelength
+
+    options['console'] = {}
    
     return options, opts
 
@@ -118,6 +120,8 @@ def loadCfgFile(path):
 
     options['stats'] = {}
     options['stats']['log_level']     = parser.get("stats","log_level")
+
+    options['console'] = {}
    
     return options
 

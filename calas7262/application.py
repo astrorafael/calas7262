@@ -30,6 +30,7 @@ from calas7262.config import VERSION_STRING, cmdline_options
 from calas7262.as7262    import AS7262Service
 from calas7262.serial    import SerialService 
 from calas7262.stats     import StatsService    
+from calas7262.console   import ConsoleService    
 
 # Read the command line arguments
 options, cmd_opts  = cmdline_options()
@@ -53,6 +54,10 @@ serialService.setServiceParent(as7262Service)
 statsService = StatsService(options['stats'])
 statsService.setName(StatsService.NAME)
 statsService.setServiceParent(as7262Service)
+
+consoService = ConsoleService(options['console'])
+consoService.setName(ConsoleService.NAME)
+consoService.setServiceParent(as7262Service)
 
 # --------------------------------------------------------
 # Store direct links to subservices in our manager service

@@ -96,7 +96,8 @@ class AS7262Protocol(LineOnlyReceiver):
         '''Sets the delimiter to the closihg parenthesis'''
         # LineOnlyReceiver.delimiter = b'\n'
         self._onReading     = set()                # callback sets
-      
+        self._onDeviceReady = set() 
+
     def connectionMade(self):
         log.debug("connectionMade()")
         self._error_passes = 0
@@ -112,7 +113,8 @@ class AS7262Protocol(LineOnlyReceiver):
             self._error_passes += 1
             log.error('#{i}, Invalid JSON in line (ignoring) => {line}', i=self._error_passes, line=line)
             if self._error_passes == 6:
-                self.enableSerialMsgs()
+                for callback in self._onDeviceReady:
+                    callback()
         else:
             contents[0] = "AS7262" if contents[0] == "A" else "OPT3001"
             if contents[0] == "AS7262":
@@ -125,8 +127,12 @@ class AS7262Protocol(LineOnlyReceiver):
             for callback in self._onReading:
                 callback(contents)
 
-    def enableSerialMsgs(self):
+    def enableMessages(self):
         self.transport.write('x')
+        self.transport.flushOutput()
+
+    def disableMessages(self):
+        self.transport.write('z')
         self.transport.flushOutput()
 
 
@@ -140,6 +146,12 @@ class AS7262Protocol(LineOnlyReceiver):
         API Entry Point
         '''
         self._onReading.add(callback)
+
+    def addDeviceReadyCallback(self, callback):
+        '''
+        API Entry Point
+        '''
+        self._onDeviceReady.add(callback)
 
 
     # --------------

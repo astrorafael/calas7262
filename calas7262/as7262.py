@@ -47,6 +47,7 @@ from calas7262.protocol import AS7262ProtocolFactory
 from calas7262.serial   import SerialService
 from calas7262.tcp      import MyTCPService
 from calas7262.stats    import StatsService    
+from calas7262.console  import ConsoleService    
 
 
 
@@ -86,6 +87,7 @@ class AS7262Service(MultiService):
         self.options     = options
         self.serialService = None
         self.statsService  = None
+        self.consoService  = None
         self.factory       = AS7262ProtocolFactory()
         self.queue         = { 
             'AS7262'  : DeferredQueue(),
@@ -103,9 +105,10 @@ class AS7262Service(MultiService):
         self.serialService  = self.getServiceNamed(SerialService.NAME)
         self.serialService.setFactory(self.factory) 
         self.statsService = self.getServiceNamed(StatsService.NAME)
+        self.consoService = self.getServiceNamed(ConsoleService.NAME)
         try:
             self.serialService.startService()
-            self.statsService.startService()
+            self.consoService.startService()
         except Exception as e:
             log.failure("{excp!s}", excp=e)
             log.critical("Problems initializing {name}. Exiting gracefully", 
@@ -128,10 +131,31 @@ class AS7262Service(MultiService):
         '''
         qname = reading['type']
         self.queue[qname].put(reading)
+
+    def onDeviceReady(self):
+        '''
+        Enqueues to the proper service
+        '''
+        self.consoService.displayPrompt()
+
+    def onCalibrationStart(self):
+        '''
+        Pass it onwards when a new reading is made
+        '''
+        self.serialService.enableMessages()
+        self.statsService.startService()
+        
+
+    def onCalibrationQuit(self):
+        '''
+        Pass it onwards when a new reading is made
+        '''
+        reactor.stop()
     
     
     @inlineCallbacks
-    def onStatsComplete(self, stats):
+    def onStatsComplete(self, stats, tables):
+        self.consoService.displayTables(tables)
         yield self.statsService.stopService()
         yield deferToThread(self._exportCSV, stats)
         yield self.stopService()

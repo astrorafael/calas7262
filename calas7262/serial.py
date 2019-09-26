@@ -84,7 +84,15 @@ class SerialService(Service):
             self.gotProtocol(self.protocol)
             log.info("Using serial port {tty} at {baud} bps", tty=self.endpoint[0], baud=self.endpoint[1])
         else:
-            raise 
+            raise
+
+    
+    def enableMessages(self):
+        self.protocol.enableMessages()
+      
+    def disableMessages(self):
+        self.protocol.disableMessages()
+
             
 
     # --------------
@@ -99,6 +107,7 @@ class SerialService(Service):
         log.debug("Serial: Got Protocol")
         self.protocol  = protocol
         self.protocol.addReadingCallback(self.onReading)
+        self.protocol.addDeviceReadyCallback(self.onDeviceReady)
 
     # ----------------------------
     # Event Handlers from Protocol
@@ -111,7 +120,12 @@ class SerialService(Service):
         self.parent.onReading(reading, self)
        
 
-    
+    def onDeviceReady(self):
+        '''
+        Pass it onwards when a new reading is made
+        '''
+        self.parent.onDeviceReady()
+       
 
 __all__ = [
     "SerialService",
