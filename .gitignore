@@ -7,3 +7,6 @@ dist
 *.pyo
 *~
 sftp-config.json
+*.log
+*.csv
+
