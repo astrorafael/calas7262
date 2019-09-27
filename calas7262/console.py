@@ -42,37 +42,37 @@ COMMANDS = {
     'start':
         {
             'help' : 'start recording AS7262 data',
-            'syntax' : r'^(start)',
+            'syntax' : r'^start',
             'callbacks' : set()       
         },
     'quit':
         {
             'help' : 'exit program',
-            'syntax' : r'^(quit)',
+            'syntax' : r'^quit',
             'callbacks' : set()        
         },
     'photodiode':
         {
             'help' : 'record photodiode current in nA',
-            'syntax' : r'^(photo\w)\s+([-+]?[0-9]*\.?[0-9]+)',
+            'syntax' : r'^photo\w\s+([-+]?[0-9]*\.?[0-9]+)',
             'callbacks' : set()        
         },
     'save':
         {
             'help' : 'save statistics to CSV file',
-            'syntax' : r'^(save)',
+            'syntax' : r'^save',
             'callbacks' : set()        
         },
     'help':
         {
             'help' : 'display available commands',
-            'syntax' : r'^(help)',
+            'syntax' : r'^help',
             'callbacks' : set()        
         },
     '<CR>':
         {
             'help' : '',
-            'syntax' : r'(^$)',
+            'syntax' : r'^$',
             'callbacks' : set()        
         },
     
@@ -102,10 +102,10 @@ class CommandLineProtocol(basic.LineReceiver):
             if matchobj:
                 anymatched = True
                 callbacks = COMMANDS[key]['callbacks']
-                N = range(2,regexp.groups+1)
+                N = range(1,regexp.groups+1)
                 params = matchobj.group(*N)
                 for callback in callbacks:
-                    callback(*params)
+                    callback(params)
         if not anymatched:
             self.transport.write("Error> " + line)
 
@@ -186,7 +186,7 @@ class ConsoleService(Service):
         '''
         Pass it onwards when a new reading is made
         '''
-        self.parent.onPhotodiodeInput(args)
+        self.parent.onPhotodiodeInput(args[0])
       
     def calibrationSave(self, *args):
         '''
