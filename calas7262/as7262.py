@@ -149,10 +149,8 @@ class AS7262Service(MultiService):
         '''
         Pass it onwards when a new reading is made
         '''
-        self.stats['photodiode'] = current
         log.info("photodiode current (nA) = {current}", current=current)
-        log.info("{stats}",stats=self.stats)
-       
+        self.stats['photodiode'] = current
         
 
     def onCalibrationQuit(self):
@@ -161,16 +159,14 @@ class AS7262Service(MultiService):
         '''
         reactor.stop()
 
+    def onStatsComplete(self, stats, tables):
+        self.stats.update(stats)   # Merge dictionaries
+        self.consoService.displayTables(tables)
 
     @inlineCallbacks
     def onCalibrationSave(self):
         yield deferToThread(self._exportCSV, self.stats)
     
-    
-    def onStatsComplete(self, stats, tables):
-        self.stats = stats
-        self.consoService.displayTables(tables)
-       
 
     # --------------------
     # Scheduler Activities
@@ -193,7 +189,7 @@ class AS7262Service(MultiService):
         #stats['author']  = self.author
         
         # transform dictionary into readable header columns for CSV export
-        oldkeys = ['tstamp', 'N', 'wavelength', 'photodiode'
+        oldkeys = ['tstamp', 'N', 'wavelength', 'photodiode',
             'violet', 'violet stddev', 'raw_violet', 'raw_violet stddev',
             'blue',   'blue stddev',   'raw_blue',   'raw_blue stddev',
             'green',  'green stddev',  'raw_green',  'raw_green stddev', 
@@ -201,7 +197,7 @@ class AS7262Service(MultiService):
             'orange', 'orange stddev', 'raw_orange', 'raw_orange stddev',
             'red',    'red stddev',    'raw_red',    'raw_red stddev'
         ]
-        newkeys = ['Timestamp', '# Samples', 'Wavelength', 'Photodiode (nA)'
+        newkeys = ['Timestamp', '# Samples', 'Wavelength', 'Photodiode (nA)',
             'Violet', 'StdDev', 'Violet (raw)', 'StdDev',
             'Blue',   'StdDev',   'Blue (raw)', 'StdDev',
             'Green',  'StdDev',  'Green (raw)', 'StdDev',

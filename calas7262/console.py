@@ -38,6 +38,8 @@ from calas7262.utils    import chop
 
 log = Logger(namespace='conso')
 
+PROMPT = "cal7262> "
+
 COMMANDS = {
     'start':
         {
@@ -107,8 +109,8 @@ class CommandLineProtocol(basic.LineReceiver):
                 for callback in callbacks:
                     callback(params)
         if not anymatched:
-            self.transport.write("Error> " + line)
-
+            self.transport.write("Error> " + line +'\n')
+            self.transport.write(PROMPT)
 
     def addCallback(self, key, callback):
         COMMANDS[key]['callbacks'].add(callback)
@@ -127,6 +129,7 @@ class ConsoleService(Service):
 
     def __init__(self, options):
         Service.__init__(self)
+        setLogLevel(namespace='as7262', levelStr=options['log_level'])
         self.options    = options
         self.protocol   = CommandLineProtocol()
        
@@ -141,17 +144,16 @@ class ConsoleService(Service):
         self.protocol.addCallback('quit', self.calibrationQuit)
         self.protocol.addCallback('photodiode', self.calibrationPhotodiode)
         self.protocol.addCallback('help', self.displayHelp)
-        self.protocol.addCallback('help', self.calibrationSave)
+        self.protocol.addCallback('save', self.calibrationSave)
         self.protocol.addCallback('<CR>', self.calibrationCR)
           
-        
 
     # ----------------------------
     # Helpers
     # -----------------------------
 
     def displayPrompt(self):
-        self.stdio.write("ca7262> ")
+        self.stdio.write(PROMPT)
 
     def displayTables(self, tables):
         for table in tables:
