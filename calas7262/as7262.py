@@ -182,11 +182,11 @@ class AS7262Service(MultiService):
         
         # transform dictionary into readable header columns for CSV export
         oldkeys = ['tstamp', 'N', 'wavelength', 
-            'violet', 'violet stddev', 'raw_violet', 'violet stddev',
-            'blue',   'blue stddev',   'raw_blue',   'blue stddev',
-            'green',  'green stddev',  'raw_green',  'green stddev', 
-            'yellow', 'yellow stddev', 'raw_yellow', 'yellow stddev',
-            'orange', 'orange stddev', 'raw_orange', 'orange stddev',
+            'violet', 'violet stddev', 'raw_violet', 'raw_violet stddev',
+            'blue',   'blue stddev',   'raw_blue',   'raw_blue stddev',
+            'green',  'green stddev',  'raw_green',  'raw_green stddev', 
+            'yellow', 'yellow stddev', 'raw_yellow', 'raw_yellow stddev',
+            'orange', 'orange stddev', 'raw_orange', 'raw_orange stddev',
             'red',    'red stddev',    'raw_red',    'raw_red stddev'
         ]
         newkeys = ['Timestamp', '# Samples', 'Wavelength', 
