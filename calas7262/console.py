@@ -163,6 +163,9 @@ class ConsoleService(Service):
     # Event Handlers from Protocol
     # -----------------------------
 
+    def writeln(self, data):
+         self.stdio.write(str(data)+'\n')
+
     def displayHelp(self, *args):
         msg = ""
         for key,entry in COMMANDS.items():

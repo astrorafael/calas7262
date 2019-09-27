@@ -163,21 +163,19 @@ class AS7262Service(MultiService):
         self.stats.update(stats)   # Merge dictionaries
         self.consoService.displayTables(tables)
 
-    @inlineCallbacks
     def onCalibrationSave(self):
-        yield deferToThread(self._exportCSV, self.stats)
-    
-
-    # --------------------
-    # Scheduler Activities
-    # --------------------
-
-    
+        if 'photodiode' in self.stats.keys():
+            d = deferToThread(self._exportCSV, self.stats).addCallback(self._done)
+        else:
+            self.consoService.writeln("Enter photodiode current first!")
     
 
     # ----------------------
     # Other Helper functions
     # ----------------------
+
+    def _done(self, *args):
+        log.info("CSV file {file} saved",file=self.options['csv_file'])
 
 
     def _exportCSV(self, stats):
