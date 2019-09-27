@@ -83,10 +83,11 @@ class StatsService(Service):
     def __init__(self, options):
         Service.__init__(self)
         setLogLevel(namespace='stats', levelStr=options['log_level'])
+        self.started    = False
         self.options    = options
         self.qsize      = options['size']
         self.wavelength = options['wavelength']
-        self.queue       = { 
+        self.queue      = { 
             'violet'     : deque([], self.qsize),
             'blue'       : deque([], self.qsize),
             'green'      : deque([], self.qsize),
@@ -111,10 +112,11 @@ class StatsService(Service):
         Service.startService(self)
         reactor.callLater(0, self.accumulate)
         self.nsamples = 0
-
+        self.started = True
        
     def stopService(self):
         log.info("stopping Stats Service")
+        self.stopped = False
         return Service.stopService(self)
     
     
@@ -128,7 +130,7 @@ class StatsService(Service):
         Task driven by deferred readings
         '''
         log.debug("starting statistics loop")
-        while True:
+        while self.started:
             sample = yield self.parent.queue['AS7262'].get()
             self.nsamples += 1
             log.info("AS7262 sample {n}/{N}", n=self.nsamples, N=self.qsize)
@@ -147,35 +149,37 @@ class StatsService(Service):
             self.queue['raw_orange'].append(sample['raw_orange'])
             self.queue['raw_red'].append(sample['raw_red'])
             if len(self.queue['red']) == self.qsize:
-                self.computeStats()
-                tables = self.formatStats()
-                self.parent.onStatsComplete(self.stats, tables)
+                masterEntry, detailEntry, statsEntry = self.computeStats()
+                tables = self.formatStats(masterEntry, detailEntry)
+                self.parent.onStatsComplete(statsEntry, tables)
+                self.started = False
                
     # --------------
     # Main task
     # ---------------
 
     def computeStats(self):
-        self.master = []
-        self.master.append([self.qsize, self.wavelength, self.exptime, self.gain])
-        self.detail = []
-        self.stats = {}
-        self.stats['N'] = self.qsize
-        self.stats['wavelength'] = self.wavelength
+        masterEntry = []
+        masterEntry.append([self.qsize, self.wavelength, self.exptime, self.gain])
+        detailEntry = []
+        statsEntry = {}
+        statsEntry['N'] = self.qsize
+        statsEntry['wavelength'] = self.wavelength
         for key in COLOUR_KEYS:   #['violet'.'blue','green','yellow','orange','red']:
             central = statistics.mean(self.queue[key])
             stddev  = round(statistics.stdev(self.queue[key], central), 2)
             central = round(central,2)
-            self.detail.append([key, central, stddev])
-            self.stats[key] = central
-            self.stats[key + ' stddev'] = stddev
+            detailEntry.append([key, central, stddev])
+            statsEntry[key] = central
+            statsEntry[key + ' stddev'] = stddev
+        return masterEntry, detailEntry, statsEntry
 
-    def formatStats(self):
+    def formatStats(self, masterEntry, detailEntry):
         headMas=["Samples","Wavelenth (nm)","Exp. Time (ms)", "Gain"]
-        msg1 = tabulate.tabulate(self.master, headers=headMas, tablefmt='grid')
+        table1 = tabulate.tabulate(masterEntry, headers=headMas, tablefmt='grid')
         headDet=["Band","Average Flux","Std. Deviation"]
-        msg2 = tabulate.tabulate(self.detail, headers=headDet, tablefmt='grid')
-        return (msg1, msg2)
+        table2 = tabulate.tabulate(detailEntry, headers=headDet, tablefmt='grid')
+        return (table1, table2)
        
         
 
