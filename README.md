@@ -56,3 +56,5 @@ When the prompt is ready, adjust the hardware exposure time and gain and then ty
 After taking some readings, it will display the final staticstics as shown in the figure below:
 
 ![](img/calas7262_b.png)
+
+When the stats are calculated, then enter the photodiode current in nA typing `photod`, then type `save`.
