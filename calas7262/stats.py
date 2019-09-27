@@ -42,6 +42,7 @@ from calas7262 import __version__
 from calas7262.config import VERSION_STRING, loadCfgFile
 from calas7262.logger import setLogLevel
 from calas7262.config import cmdline
+from calas7262.protocol   import COLOUR_KEYS
 
 
 # ----------------
@@ -86,12 +87,18 @@ class StatsService(Service):
         self.qsize      = options['size']
         self.wavelength = options['wavelength']
         self.queue       = { 
-            'violet' : deque([], self.qsize),
-            'blue'   : deque([], self.qsize),
-            'green'  : deque([], self.qsize),
-            'yellow' : deque([], self.qsize),
-            'orange' : deque([], self.qsize),
-            'red'    : deque([], self.qsize),
+            'violet'     : deque([], self.qsize),
+            'blue'       : deque([], self.qsize),
+            'green'      : deque([], self.qsize),
+            'yellow'     : deque([], self.qsize),
+            'orange'     : deque([], self.qsize),
+            'red'        : deque([], self.qsize),
+            'raw_violet' : deque([], self.qsize),
+            'raw_blue'   : deque([], self.qsize),
+            'raw_green'  : deque([], self.qsize),
+            'raw_yellow' : deque([], self.qsize),
+            'raw_orange' : deque([], self.qsize),
+            'raw_red'    : deque([], self.qsize),
         } 
             
 
@@ -133,6 +140,12 @@ class StatsService(Service):
             self.queue['yellow'].append(sample['yellow'])
             self.queue['orange'].append(sample['orange'])
             self.queue['red'].append(sample['red'])
+            self.queue['raw_violet'].append(sample['raw_violet'])
+            self.queue['raw_blue'].append(sample['raw_blue'])
+            self.queue['raw_green'].append(sample['raw_green'])
+            self.queue['raw_yellow'].append(sample['raw_yellow'])
+            self.queue['raw_orange'].append(sample['raw_orange'])
+            self.queue['raw_red'].append(sample['raw_red'])
             if len(self.queue['red']) == self.qsize:
                 self.computeStats()
                 tables = self.formatStats()
@@ -149,7 +162,7 @@ class StatsService(Service):
         self.stats = {}
         self.stats['N'] = self.qsize
         self.stats['wavelength'] = self.wavelength
-        for key in self.queue.keys():   #['violet'.'blue','green','yellow','orange','red']:
+        for key in COLOUR_KEYS:   #['violet'.'blue','green','yellow','orange','red']:
             central = statistics.mean(self.queue[key])
             stddev  = round(statistics.stdev(self.queue[key], central), 2)
             central = round(central,2)

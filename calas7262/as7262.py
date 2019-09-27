@@ -181,8 +181,22 @@ class AS7262Service(MultiService):
         #stats['author']  = self.author
         
         # transform dictionary into readable header columns for CSV export
-        oldkeys = ['tstamp', 'N', 'wavelength', 'violet', 'violet stddev', 'blue', 'blue stddev', 'green', 'green stddev', 'yellow', 'yellow stddev', 'orange', 'orange stddev', 'red', 'red stddev']
-        newkeys = ['Timestamp', '# Samples', 'Wavelength', 'Violet', 'StdDev', 'Blue', 'StdDev', 'Green', 'StdDev', 'Yellow', 'StdDev', 'Orange', 'StdDev', 'Red', 'StdDev']
+        oldkeys = ['tstamp', 'N', 'wavelength', 
+            'violet', 'violet stddev', 'raw_violet', 'violet stddev',
+            'blue',   'blue stddev',   'raw_blue',   'blue stddev',
+            'green',  'green stddev',  'raw_green',  'green stddev', 
+            'yellow', 'yellow stddev', 'raw_yellow', 'yellow stddev',
+            'orange', 'orange stddev', 'raw_orange', 'orange stddev',
+            'red',    'red stddev',    'raw_red',    'raw_red stddev'
+        ]
+        newkeys = ['Timestamp', '# Samples', 'Wavelength', 
+            'Violet', 'StdDev', 'Violet (raw)', 'StdDev',
+            'Blue',   'StdDev',   'Blue (raw)', 'StdDev',
+            'Green',  'StdDev',  'Green (raw)', 'StdDev',
+            'Yellow', 'StdDev', 'Yellow (raw)', 'StdDev',
+            'Orange', 'StdDev', 'Orange (raw)', 'StdDev',
+            'Red',    'StdDev',    'Red (raw)', 'StdDev'
+        ]
         for old,new in zip(oldkeys,newkeys):
             stats[new] = stats.pop(old)
         # CSV file generation

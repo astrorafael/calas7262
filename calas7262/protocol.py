@@ -32,25 +32,22 @@ from twisted.protocols.basic      import LineOnlyReceiver
 # Module constants
 # ----------------
 
-# -----------------------
 
 log = Logger(namespace='proto')
+
+# Order in which the different band readings arrive
+COLOUR_KEYS  = ["violet","raw_violet","blue","raw_blue","green","raw_green","yellow","raw_yellow","orange","raw_orange","red","raw_red"]
+AS7262_KEYS  = ["type","seq","millis","exptime","gain","temp"] + COLOUR_KEYS
+OPT3001_KEYS = ["type","seq","millis","exptime","lux"]
 
 # ----------------
 # Module functions
 # ----------------
 
 
-
 # ----------
 # Exceptions
 # ----------
-
-
-class AS7262Error(Exception):
-    '''Base class for all exceptions below'''
-    pass
-
 
 
 # -------
@@ -118,9 +115,9 @@ class AS7262Protocol(LineOnlyReceiver):
         else:
             contents[0] = "AS7262" if contents[0] == "A" else "OPT3001"
             if contents[0] == "AS7262":
-                contents = zip(["type","seq","millis","exptime","gain","temp","violet","blue","green","yellow","orange","red"], contents)
+                contents = zip(AS7262_KEYS, contents)
             else:
-                contents = zip(["type","seq","millis","exptime","lux"], contents)
+                contents = zip(OPT3001_KEYS, contents)
             contents.append(('tstamp', now))
             contents = dict(contents)
             log.debug("decoded {dictionary}", dictionary=contents)
@@ -166,7 +163,6 @@ class AS7262Protocol(LineOnlyReceiver):
 
 
 __all__ = [
-    "AS7262Error",
     "AS7262Protocol",
     "AS7262ProtocolFactory",
 ]
