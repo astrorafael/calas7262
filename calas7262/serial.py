@@ -88,9 +88,11 @@ class SerialService(Service):
 
     
     def enableMessages(self):
+        log.info("enabling messages from hardware")
         self.protocol.enableMessages()
       
     def disableMessages(self):
+        log.info("disabling messages from hardware")
         self.protocol.disableMessages()
 
             

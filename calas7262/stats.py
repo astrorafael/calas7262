@@ -87,6 +87,17 @@ class StatsService(Service):
         self.options    = options
         self.qsize      = options['size']
         self.wavelength = options['wavelength']
+        
+    def startService(self):
+        '''
+        Starts Stats service
+        '''
+        log.info("starting Stats Service: Window Size= {w} samples", 
+            w=self.options['size'])
+        Service.startService(self)
+        reactor.callLater(0, self.accumulate)
+        self.nsamples = 0
+        self.started = True
         self.queue      = { 
             'violet'     : deque([], self.qsize),
             'blue'       : deque([], self.qsize),
@@ -101,22 +112,10 @@ class StatsService(Service):
             'raw_orange' : deque([], self.qsize),
             'raw_red'    : deque([], self.qsize),
         } 
-            
-
-    def startService(self):
-        '''
-        Starts Stats service
-        '''
-        log.info("starting Stats Service: Window Size= {w} samples", 
-            w=self.options['size'])
-        Service.startService(self)
-        reactor.callLater(0, self.accumulate)
-        self.nsamples = 0
-        self.started = True
        
     def stopService(self):
         log.info("stopping Stats Service")
-        self.stopped = False
+        self.started = False
         return Service.stopService(self)
     
     
@@ -153,7 +152,7 @@ class StatsService(Service):
                 masterEntry, detailEntry, statsEntry = self.computeStats()
                 tables = self.formatStats(masterEntry, detailEntry)
                 self.parent.onStatsComplete(statsEntry, tables)
-                self.started = False
+                yield self.stopService()
                
     # --------------
     # Main task
@@ -176,7 +175,7 @@ class StatsService(Service):
         return masterEntry, detailEntry, statsEntry
 
     def formatStats(self, masterEntry, detailEntry):
-        headMas=["Samples","Wavelenth (nm)","Exp. Time (ms)", "Gain", "Accumulated"]
+        headMas=["Samples","Wavelength (nm)","Exp. Time (ms)", "Gain", "Accumulated"]
         table1 = tabulate.tabulate(masterEntry, headers=headMas, tablefmt='grid')
         headDet=["Band","Average Flux","Std. Deviation"]
         table2 = tabulate.tabulate(detailEntry, headers=headDet, tablefmt='grid')

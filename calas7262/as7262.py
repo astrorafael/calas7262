@@ -134,7 +134,7 @@ class AS7262Service(MultiService):
 
     def onDeviceReady(self):
         '''
-        Enqueues to the proper service
+        Disaplay a prompt
         '''
         self.consoService.displayPrompt()
 
@@ -142,8 +142,9 @@ class AS7262Service(MultiService):
         '''
         Pass it onwards when a new reading is made
         '''
-        self.serialService.enableMessages()
+        self.stats = {}
         self.statsService.startService()
+        self.serialService.enableMessages()
 
     def onPhotodiodeInput(self, current):
         '''
@@ -160,6 +161,7 @@ class AS7262Service(MultiService):
         reactor.stop()
 
     def onStatsComplete(self, stats, tables):
+        self.serialService.disableMessages()
         self.stats.update(stats)   # Merge dictionaries
         self.consoService.displayTables(tables)
 
