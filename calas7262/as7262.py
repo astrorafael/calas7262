@@ -160,10 +160,12 @@ class AS7262Service(MultiService):
         '''
         reactor.stop()
 
+
     def onStatsComplete(self, stats, tables):
         self.serialService.disableMessages()
         self.stats.update(stats)   # Merge dictionaries
         self.consoService.displayTables(tables)
+
 
     def onCalibrationSave(self):
         if 'photodiode' in self.stats.keys():
