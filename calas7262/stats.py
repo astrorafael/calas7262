@@ -136,6 +136,7 @@ class StatsService(Service):
             log.info("AS7262 sample {n}/{N}", n=self.nsamples, N=self.qsize)
             self.exptime = sample['exptime']
             self.gain    = sample['gain']
+            self.accum   = sample['accum']
             self.queue['violet'].append(sample['violet'])
             self.queue['blue'].append(sample['blue'])
             self.queue['green'].append(sample['green'])
@@ -160,7 +161,7 @@ class StatsService(Service):
 
     def computeStats(self):
         masterEntry = []
-        masterEntry.append([self.qsize, self.wavelength, self.exptime, self.gain])
+        masterEntry.append([self.qsize, self.wavelength, self.exptime, self.gain, self.accum])
         detailEntry = []
         statsEntry = {}
         statsEntry['N'] = self.qsize
@@ -175,7 +176,7 @@ class StatsService(Service):
         return masterEntry, detailEntry, statsEntry
 
     def formatStats(self, masterEntry, detailEntry):
-        headMas=["Samples","Wavelenth (nm)","Exp. Time (ms)", "Gain"]
+        headMas=["Samples","Wavelenth (nm)","Exp. Time (ms)", "Gain", "Accumulated"]
         table1 = tabulate.tabulate(masterEntry, headers=headMas, tablefmt='grid')
         headDet=["Band","Average Flux","Std. Deviation"]
         table2 = tabulate.tabulate(detailEntry, headers=headDet, tablefmt='grid')

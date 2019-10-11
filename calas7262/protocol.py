@@ -37,8 +37,8 @@ log = Logger(namespace='proto')
 
 # Order in which the different band readings arrive
 COLOUR_KEYS  = ["violet","raw_violet","blue","raw_blue","green","raw_green","yellow","raw_yellow","orange","raw_orange","red","raw_red"]
-AS7262_KEYS  = ["type","seq","millis","exptime","gain","temp"] + COLOUR_KEYS
-OPT3001_KEYS = ["type","seq","millis","exptime","lux"]
+AS7262_KEYS  = ["type","seq","millis","accum","exptime","gain","temp"] + COLOUR_KEYS
+OPT3001_KEYS = ["type","seq","millis","accum","exptime","lux"]
 
 # ----------------
 # Module functions
