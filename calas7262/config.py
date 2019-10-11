@@ -63,6 +63,7 @@ def cmdline():
     parser.add_argument('-w' , '--wavelength', type=int, required=True, help='enter wavelength for CSV logging')
     parser.add_argument('-l' , '--log-level', type=str, default="info", choices=["info","debug"], help='enter wavelength for CSV logging')
     parser.add_argument('-c' , '--csv-file', type=str, default="calas7262.csv", help='statistics CSV file')
+    parser.add_argument('-m' , '--csv-samples', type=str, default="samples.csv", help='CSV samples file')
     parser.add_argument('-p' , '--port', type=str, default="/dev/ttyUSB0", help='Serial Port path')
     parser.add_argument('-b' , '--baud', type=int, default=115200, choices=[9600, 115200], help='Serial port baudrate')
     
@@ -77,8 +78,9 @@ def cmdline_options():
     
     options = {}
     options['as7262'] = {}
-    options['as7262']['log_level']  = opts.log_level
-    options['as7262']['csv_file']   = opts.csv_file
+    options['as7262']['log_level']   = opts.log_level
+    options['as7262']['csv_file']    = opts.csv_file
+    options['as7262']['csv_samples'] = opts.csv_samples
     
     options['serial'] = {}
     options['serial']['endpoint']      = "serial:" + opts.port + ":" + str(opts.baud)

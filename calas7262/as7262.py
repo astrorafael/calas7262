@@ -43,7 +43,7 @@ from calas7262.logger import setLogLevel
 
 from calas7262.service.reloadable import MultiService
 from calas7262.config   import cmdline
-from calas7262.protocol import AS7262ProtocolFactory
+from calas7262.protocol import AS7262ProtocolFactory, AS7262_KEYS
 from calas7262.serial   import SerialService
 from calas7262.stats    import StatsService    
 from calas7262.console  import ConsoleService    
@@ -131,7 +131,7 @@ class AS7262Service(MultiService):
         '''
         qname = reading['type']
         self.queue[qname].put(reading)
-        if reading['type'] == 'A':
+        if reading['type'] == 'AS7262':
             self.samples.append(reading)
 
     def onDeviceReady(self):
@@ -173,6 +173,7 @@ class AS7262Service(MultiService):
     def onCalibrationSave(self):
         if 'photodiode' in self.stats.keys():
             d = deferToThread(self._exportCSV, self.stats).addCallback(self._done, self.options['csv_file'])
+            d = deferToThread(self._exportSamples).addCallback(self._done, self.options['csv_samples'])
         else:
             self.consoService.writeln("Enter photodiode current first!")
     
@@ -183,6 +184,25 @@ class AS7262Service(MultiService):
 
     def _done(self, *args):
         log.info("CSV file {file} saved",file=args[1])
+
+
+    def _exportSamples(self):
+        '''Exports summary statistics to a common CSV file'''
+        log.debug("Appending to CSV file {file}",file=self.options['csv_samples'])
+        # Adding metadata to the estimation
+        for sample in self.samples:
+            sample['tstamp'] = (sample['tstamp'] + datetime.timedelta(seconds=0.5)).strftime(TSTAMP_FORMAT)
+        
+        keys = ['tstamp'] + AS7262_KEYS
+
+        # CSV file generation
+        writeheader = not os.path.exists(self.options['csv_samples'])
+        with open(self.options['csv_samples'], mode='a+') as csv_samples:
+            writer = csv.DictWriter(csv_samples, fieldnames=keys, delimiter=';', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+            if writeheader:
+                writer.writeheader()
+            writer.writerows(self.samples)
+        log.info("updated CSV file {file}",file=self.options['csv_samples'])
 
 
     def _exportCSV(self, stats):

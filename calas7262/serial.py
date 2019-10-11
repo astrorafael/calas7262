@@ -71,8 +71,7 @@ class SerialService(Service):
     
     def startService(self):
         '''
-        Starts the Serial Service that listens to a TESS
-        By exception, this returns a deferred that is handled by emaservice
+        Starts the Serial Service that listens to a SpectralDevice
         '''
         log.info("starting Serial Service")
         parts = chop(self.options['endpoint'], sep=':')
