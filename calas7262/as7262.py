@@ -131,6 +131,8 @@ class AS7262Service(MultiService):
         '''
         qname = reading['type']
         self.queue[qname].put(reading)
+        if reading['type'] == 'A':
+            self.samples.append(reading)
 
     def onDeviceReady(self):
         '''
@@ -143,6 +145,7 @@ class AS7262Service(MultiService):
         Pass it onwards when a new reading is made
         '''
         self.stats = {}
+        self.samples = []
         self.statsService.startService()
         self.serialService.enableMessages()
 
