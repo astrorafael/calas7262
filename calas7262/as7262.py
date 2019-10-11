@@ -167,7 +167,7 @@ class AS7262Service(MultiService):
 
     def onCalibrationSave(self):
         if 'photodiode' in self.stats.keys():
-            d = deferToThread(self._exportCSV, self.stats).addCallback(self._done)
+            d = deferToThread(self._exportCSV, self.stats).addCallback(self._done, self.options['csv_file'])
         else:
             self.consoService.writeln("Enter photodiode current first!")
     
@@ -177,7 +177,7 @@ class AS7262Service(MultiService):
     # ----------------------
 
     def _done(self, *args):
-        log.info("CSV file {file} saved",file=self.options['csv_file'])
+        log.info("CSV file {file} saved",file=args[1])
 
 
     def _exportCSV(self, stats):
