@@ -55,8 +55,8 @@ COMMANDS = {
         },
     'photodiode':
         {
-            'help' : 'record photodiode current in nA',
-            'syntax' : r'^photo\w\s+([-+]?[0-9]*\.?[0-9]+)',
+            'help' : 'record photodiode current (A)',
+            'syntax' : r'^photod\w\s+([-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)',
             'callbacks' : set()        
         },
     'save':

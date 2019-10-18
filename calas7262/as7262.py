@@ -153,8 +153,7 @@ class AS7262Service(MultiService):
         '''
         Pass it onwards when a new reading is made
         '''
-        log.info("photodiode current (nA) = {current}", current=current)
-        self.stats['photodiode'] = current
+        self.statsService.onPhotodiodeInput(current)
         
 
     def onCalibrationQuit(self):
@@ -171,7 +170,7 @@ class AS7262Service(MultiService):
 
 
     def onCalibrationSave(self):
-        if 'photodiode' in self.stats.keys():
+        if self.stats['photodiode'] is not None:
             d = deferToThread(self._exportCSV, self.stats).addCallback(self._done, self.options['csv_file'])
             d = deferToThread(self._exportSamples).addCallback(self._done, self.options['csv_samples'])
         else:

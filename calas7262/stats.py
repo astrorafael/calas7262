@@ -87,6 +87,7 @@ class StatsService(Service):
         self.options    = options
         self.qsize      = options['size']
         self.wavelength = options['wavelength']
+        self.photodiode = options['photodiode']
         
     def startService(self):
         '''
@@ -117,7 +118,14 @@ class StatsService(Service):
         log.info("stopping Stats Service")
         self.started = False
         return Service.stopService(self)
-    
+
+
+    def onPhotodiodeInput(self, current):
+        '''
+        Tale note
+        '''
+        self.photodiode = float(current[0])
+        log.info("photodiode current (A) = {current}", current= self.photodiode)
     
     # --------------
     # Main task
@@ -165,6 +173,7 @@ class StatsService(Service):
         statsEntry = {}
         statsEntry['N'] = self.qsize
         statsEntry['wavelength'] = self.wavelength
+        statsEntry['photodiode'] = self.photodiode
         for key in COLOUR_KEYS:   #['violet'.'blue','green','yellow','orange','red']:
             central = statistics.mean(self.queue[key])
             stddev  = round(statistics.stdev(self.queue[key], central), 2)
