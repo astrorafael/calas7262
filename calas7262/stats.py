@@ -88,7 +88,10 @@ class StatsService(Service):
         self.qsize      = options['size']
         self.wavelength = options['wavelength']
         self.photodiode = options['photodiode']
+        if self.photodiode is not None:
+            self.photodiode = '{:.6e}'.format(self.photodiode)
         
+
     def startService(self):
         '''
         Starts Stats service
@@ -113,6 +116,7 @@ class StatsService(Service):
             'raw_orange' : deque([], self.qsize),
             'raw_red'    : deque([], self.qsize),
         } 
+        log.info("photodiode current (A) = {current}", current= self.photodiode)
        
     def stopService(self):
         log.info("stopping Stats Service")
@@ -122,9 +126,9 @@ class StatsService(Service):
 
     def onPhotodiodeInput(self, current):
         '''
-        Tale note
+        Takee note
         '''
-        self.photodiode = float(current[0])
+        self.photodiode = '{:.6e}'.format(float(current[0]))
         log.info("photodiode current (A) = {current}", current= self.photodiode)
     
     # --------------
