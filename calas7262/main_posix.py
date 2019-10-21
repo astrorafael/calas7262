@@ -22,7 +22,7 @@ from twisted.application.service import IService
 # local imports
 # -------------
 
-from calas7262  import __version__
+from calas7262             import __version__
 from calas7262.application import application
 from calas7262.logger      import sysLogInfo
 
