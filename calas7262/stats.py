@@ -144,7 +144,7 @@ class StatsService(Service):
         while self.started:
             sample = yield self.parent.queue['AS7262'].get()
             self.nsamples += 1
-            log.info("AS7262 sample {n}/{N}", n=self.nsamples, N=self.qsize)
+            log.info("received AS7262 sample {n}/{N}", n=self.nsamples, N=self.qsize)
             self.exptime = sample['exptime']
             self.gain    = sample['gain']
             self.accum   = sample['accum']

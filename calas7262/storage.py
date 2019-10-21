@@ -73,11 +73,9 @@ class StorageService(Service):
         '''
         log.info("starting Storage Service")
         Service.startService(self)
-        log.info("before calling resource_string()")
         path = resource_filename(__name__, 'data/QE_photodiode.csv')
-        log.info("Calling resource_string() returns {ret}",ret=str(path))
         self.loadQE(path)
-        log.info("QE data is {qe}",qe=self.qe_data)
+        log.debug("QE data is {qe}",qe=self.qe_data)
 
        
     def stopService(self):
@@ -100,7 +98,7 @@ class StorageService(Service):
             for row in csv_reader:
                 if line_count != 0:
                     key   = int(row['WL'])
-                    value = row['QE']
+                    value = float(row['QE'])
                     self.qe_data[key] = value
                 line_count += 1
 
