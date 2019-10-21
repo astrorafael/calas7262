@@ -44,6 +44,11 @@ CLASSIFIERS  = [
 DATA_FILES  = [ 
     ('/usr/local/bin',   ['files/usr/local/bin/calas7262']),
 ]
+
+# Additional data inside the package
+PACKAGE_DATA = {
+    'calas7262': ['data/QE_photodiode.csv'],
+}
                                 
 setup(name             = PKG_NAME,
       version          = versioneer.get_version(),
@@ -58,6 +63,6 @@ setup(name             = PKG_NAME,
       classifiers      = CLASSIFIERS,
       packages         = PACKAGES,
       install_requires = DEPENDENCIES,
-      data_files       = DATA_FILES
+      data_files       = DATA_FILES,
+      package_data     = PACKAGE_DATA
       )
-
