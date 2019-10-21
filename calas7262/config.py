@@ -29,8 +29,8 @@ from twisted.logger import LogLevel
 # local imports
 # -------------
 
+from calas7262       import __version__
 from calas7262.utils import chop
-from calas7262 import __version__
 
 # ----------------
 # Module constants
@@ -81,8 +81,6 @@ def cmdline_options():
     options = {}
     options['as7262'] = {}
     options['as7262']['log_level']   = opts.log_level
-    options['as7262']['csv_file']    = opts.csv_file
-    options['as7262']['csv_samples'] = opts.csv_samples
     
     options['serial'] = {}
     options['serial']['endpoint']      = "serial:" + opts.port + ":" + str(opts.baud)
@@ -97,6 +95,11 @@ def cmdline_options():
 
     options['console'] = {}
     options['console']['log_level']   = opts.log_level
+
+    options['storage'] = {}
+    options['storage']['csv_file']    = opts.csv_file
+    options['storage']['csv_samples'] = opts.csv_samples
+    options['storage']['log_level']   = opts.log_level
    
     return options, opts
 
@@ -117,18 +120,21 @@ def loadCfgFile(path):
 
     options['as7262'] = {}
     options['as7262']['log_level']  = parser.get("as7262","log_level")
-    options['as7262']['csv_file']   = parser.get("as7262","csv_file")
-    
+   
     options['serial'] = {}
     options['serial']['endpoint']      = parser.get("serial","endpoint")
     options['serial']['log_level']     = parser.get("serial","log_level")
-   
 
     options['stats'] = {}
     options['stats']['log_level']     = parser.get("stats","log_level")
 
     options['console'] = {}
-    options['console']['log_level']     = parser.get("console","log_level")
+    options['console']['log_level']   = parser.get("console","log_level")
+
+    options['storage'] = {}
+    options['storage']['csv_file']   = parser.get("storage","csv_file")
+    options['storage']['csv_samples'] = parser.get("storage","csv_samples")
+    options['storage']['log_level']   = parser.get("storage","log_level")
    
     return options
 

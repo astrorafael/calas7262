@@ -23,14 +23,11 @@ from twisted.internet             import reactor, stdio
 from twisted.internet.defer       import inlineCallbacks, returnValue
 from twisted.application.service  import Service
 
-
 #--------------
 # local imports
 # -------------
 
 from calas7262.logger   import setLogLevel
-from calas7262.utils    import chop
-
 
 # -----------------------
 # Module global variables
