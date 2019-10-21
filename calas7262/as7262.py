@@ -36,7 +36,8 @@ from calas7262.service.reloadable import MultiService
 from calas7262.protocol import AS7262ProtocolFactory
 from calas7262.serial   import SerialService
 from calas7262.stats    import StatsService    
-from calas7262.console  import ConsoleService    
+from calas7262.console  import ConsoleService
+from calas7262.storage  import StorageService
 
 # ----------------
 # Module constants
