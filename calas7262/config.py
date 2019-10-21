@@ -80,7 +80,7 @@ def cmdline_options():
     
     options = {}
     options['as7262'] = {}
-    options['as7262']['log_level']   = opts.log_level
+    options['as7262']['log_level']  = opts.log_level
     
     options['serial'] = {}
     options['serial']['endpoint']      = "serial:" + opts.port + ":" + str(opts.baud)
@@ -97,6 +97,8 @@ def cmdline_options():
     options['console']['log_level']   = opts.log_level
 
     options['storage'] = {}
+    options['storage']['wavelength']  = opts.wavelength
+    options['storage']['photodiode']  = opts.photodiode
     options['storage']['csv_file']    = opts.csv_file
     options['storage']['csv_samples'] = opts.csv_samples
     options['storage']['log_level']   = opts.log_level
