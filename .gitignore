@@ -8,5 +8,5 @@ dist
 *~
 sftp-config.json
 *.log
-*.csv
+
 
