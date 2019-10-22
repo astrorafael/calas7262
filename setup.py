@@ -33,7 +33,6 @@ CLASSIFIERS  = [
     'Intended Audience :: Developers',
     'License :: OSI Approved :: MIT License',
     'Operating System :: POSIX :: Linux',
-    'Operating System :: Windows',
     'Programming Language :: Python :: 2.7',
     'Topic :: Scientific/Engineering :: Astronomy',
     'Topic :: Scientific/Engineering :: Atmospheric Science',
