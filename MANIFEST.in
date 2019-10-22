@@ -1,5 +1,6 @@
 include versioneer.py
 include calas7262/_version.py
+include calas7262/data/QE_photodiode.csv
 include files/usr/local/bin/calas7262
 
 
