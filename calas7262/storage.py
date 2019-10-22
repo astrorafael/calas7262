@@ -82,10 +82,10 @@ class StorageService(Service):
         log.info("stopping Stats Service")
         return Service.stopService(self)
 
-
+    @inlineCallbacks
     def onCalibrationSave(self, stats, samples):
-        d = deferToThread(self.saveSamples, samples).addCallback(self._done, self.options['csv_samples'])
-        d = deferToThread(self.saveCSV, stats).addCallback(self._done, self.options['csv_file'])
+        yield deferToThread(self.saveSamples, samples).addCallback(self._done, self.options['csv_samples'])
+        yield deferToThread(self.saveCSV, stats).addCallback(self._done, self.options['csv_file'])
 
     # ----------------------
     # Other Helper functions
@@ -98,7 +98,7 @@ class StorageService(Service):
             for row in csv_reader:
                 if line_count != 0:
                     key   = int(row['WL'])
-                    value = float(row['QE'])
+                    value = (row['QE']).strip()
                     self.qe_data[key] = value
                 line_count += 1
 

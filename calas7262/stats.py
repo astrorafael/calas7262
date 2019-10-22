@@ -163,7 +163,7 @@ class StatsService(Service):
             if len(self.queue['red']) == self.qsize:
                 masterEntry, detailEntry, statsEntry = self.computeStats()
                 tables = self.formatStats(masterEntry, detailEntry)
-                self.parent.onStatsComplete(statsEntry, tables)
+                yield self.parent.onStatsComplete(statsEntry, tables)
                 yield self.stopService()
                
     # --------------

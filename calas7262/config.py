@@ -59,7 +59,7 @@ def cmdline():
     parser.add_argument('-k' , '--console', action='store_true', help='log to console')
     parser.add_argument('--log-file', type=str, default="calas7262.log", help='log file')
     parser.add_argument('--log-messages', action='store_true', help='log raw messages too')
-    parser.add_argument('-s' , '--size',    type=int, default=25 , help='how many samples to take before computing statistics')
+    parser.add_argument('-s' , '--size',    type=int, default=5 , help='how many samples to take before computing statistics')
     parser.add_argument('-w' , '--wavelength', type=int, required=True, help='enter wavelength for CSV logging')
     parser.add_argument('-d' , '--photodiode', type=float,  help='enter photodiode current for CSV logging')
     parser.add_argument('-l' , '--log-level', type=str, default="info", choices=["info","debug"], help='enter wavelength for CSV logging')
@@ -67,6 +67,7 @@ def cmdline():
     parser.add_argument('-m' , '--csv-samples', type=str, default="samples.csv", help='CSV samples file')
     parser.add_argument('-p' , '--port', type=str, default="/dev/ttyUSB0", help='Serial Port path')
     parser.add_argument('-b' , '--baud', type=int, default=115200, choices=[9600, 115200], help='Serial port baudrate')
+    parser.add_argument('-a', '--automatic', action='store_true', help='Automatic adquisition, save and exit.')
 
     
     return parser.parse_args()
@@ -80,8 +81,9 @@ def cmdline_options():
     
     options = {}
     options['as7262'] = {}
-    options['as7262']['log_level']  = opts.log_level
-    
+    options['as7262']['log_level'] = opts.log_level
+    options['as7262']['automatic'] = opts.automatic
+
     options['serial'] = {}
     options['serial']['endpoint']      = "serial:" + opts.port + ":" + str(opts.baud)
     options['serial']['log_level']     = opts.log_level

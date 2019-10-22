@@ -99,6 +99,8 @@ class AS7262Service(MultiService):
             self.storageService.startService()
             self.serialService.startService()
             self.consoService.startService()
+            if self.options['automatic']:
+                reactor.callLater(7,self.onCalibrationStart)
         except Exception as e:
             log.failure("{excp!s}", excp=e)
             log.critical("Problems initializing {name}. Exiting gracefully", 
@@ -152,21 +154,25 @@ class AS7262Service(MultiService):
         '''
         reactor.stop()
 
-
+    @inlineCallbacks
     def onStatsComplete(self, stats, tables):
         self.serialService.disableMessages()
         self.stats.update(stats)   # Merge dictionaries
         self.consoService.displayTables(tables)
+        if self.options['automatic']:
+            yield self.onCalibrationSave()
+            self.onCalibrationQuit()
 
 
+    @inlineCallbacks
     def onCalibrationSave(self):
         if len(self.stats) == 0:
             self.consoService.writeln("Sorry!, no stats to save.")
-            return
+            returnValue(None)
         if not 'photodiode' in self.stats.keys():
             self.consoService.writeln("Enter photodiode current first!")
-            return
-        self.storageService.onCalibrationSave(self.stats, self.samples)
+            returnValue(None)
+        yield self.storageService.onCalibrationSave(self.stats, self.samples)
            
 
     # ----------------------
